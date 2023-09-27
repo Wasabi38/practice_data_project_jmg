@@ -11,11 +11,13 @@ format: html
 
 library(tidyverse)
 library(ggthemes)
+library(skimr)
+library(maps)
 
 theme_set(theme_minimal(base_size = 12))
 ```
 
-
+We obtained the raw data from [here](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv)
 
 ## The Data
 
@@ -31,12 +33,70 @@ Check what we read in
 glimpse(tornados)
 ```
 
+This data contains 68,693 rows and 27 columns (variables).
 
+```{r}
+skim(tornados)
+```
 
+Use Console when you use the skim command. It can get ugly real quick.
 
+```{r}
+tornados %>%
+  ggplot(aes(x = st)) +
+  geom_bar() +
+  coord_flip()
+```
 
+Makes a bar plot of the count of tornados by count. Virgin Islands, Washington DC and Cuban Islands included.
 
+```{r}
+tornados %>%
+  ggplot(aes(x=slon,y=slat)) +
+  geom_point(alpha=0.2)
+```
 
+Makes a really cool map
 
+```{r}
+states_df <- map_data("state")
+```
+
+Making the states
+
+```{r}
+tornados49 <- tornados %>%
+  filter(st != "AK", st != "HI", st != "PR", st != "VI")
+```
+
+Apparently we don't like Alaska, Puerto Rico, the Virgin Islands, and the HI anymore.
+
+```{r}
+tornados49 %>%
+  ggplot(aes(x = st)) +
+  geom_bar() +
+  coord_flip()
+```
+
+Bar plot barring the four states 
+
+```{r}
+tornados49 %>%
+  group_by(st) %>%
+  summarise(per_state = n()) %>%
+  arrange(desc(per_state))
+```
+
+Putting the bar graph into numbers and arranging
+
+```{r}
+tornados49 %>%
+  group_by(st) %>%
+  summarise(per_state = n()) %>%
+  arrange(desc(per_state)) %>%
+  ggplot(aes(x = reorder(st,per_state),y=per_state)) +
+  geom_bar() +
+  coord_flip()
+```
 
 
