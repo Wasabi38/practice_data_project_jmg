@@ -94,9 +94,70 @@ tornados49 %>%
   group_by(st) %>%
   summarise(per_state = n()) %>%
   arrange(desc(per_state)) %>%
-  ggplot(aes(x = reorder(st,per_state),y=per_state)) +
-  geom_bar() +
+  ggplot(aes(x=reorder(st,per_state),y=per_state)) +
+  geom_bar(stat = "identity")  +
   coord_flip()
 ```
 
+```{r}
+tornados_49 <- tornados49 %>%
+  filter(slon >= -105)
+states_of <- states_df %>%
+  filter(long >= -105)
+glimpse(states_of)
+```
+
+```{r}
+tornados_49 %>%
+  group_by(st) %>%
+  summarise(per_state = n()) %>%
+  arrange(desc(per_state)) %>%
+  ggplot(aes(x=reorder(st,per_state),y=per_state)) +
+  geom_bar(stat = "identity")  +
+  coord_flip()
+```
+
+```{r}
+tornados %>%
+  filter(fat > 0) %>%
+  ggplot(aes(x=fat)) +
+  geom_bar()
+```
+
+```{r}
+tornados49 %>%
+  mutate(mag = factor(mag)) %>%
+  ggplot(aes(x=mag,fill=fc)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  scale_y_log10()
+```
+
+```{r}
+tornados %>%
+  mutate(ns = factor(ns)) %>%
+  ggplot(aes(x=ns)) +
+  geom_bar() +
+  scale_y_log10()
+```
+
+```{r}
+tornados_49 %>%
+  ggplot(aes(x=len)) +
+  geom_histogram() +
+  scale_x_log10()
+```
+
+```{r}
+tornados49 %>%
+  mutate(mag=factor(mag)) %>%
+  ggplot(aes(x=mag,y=len)) +
+  geom_boxplot()
+```
+
+```{r}
+tornados49 %>%
+  mutate(mag=factor(mag)) %>%
+  ggplot(aes(x=mag,y=fat)) +
+  geom_point()
+```
 
